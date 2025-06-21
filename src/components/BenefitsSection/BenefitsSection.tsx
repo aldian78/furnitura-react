@@ -49,39 +49,27 @@ export const BenefitsSection = (): JSX.Element => {
   ];
 
   return (
-    <section className="flex flex-col items-center gap-[72px] py-20 px-6 md:px-12 lg:px-24 w-full">
+    <section className="flex flex-col items-center py-16 px-6 md:px-12 lg:px-24 w-full">
       <h2 className="font-h1-32-extra-bold font-[number:var(--h1-32-extra-bold-font-weight)] text-black-1 text-[length:var(--h1-32-extra-bold-font-size)] text-center tracking-[var(--h1-32-extra-bold-letter-spacing)] leading-[var(--h1-32-extra-bold-line-height)] [font-style:var(--h1-32-extra-bold-font-style)]">
         WHY CHOOSE US?
       </h2>
 
       <div className="flex flex-col gap-[68px] w-full max-w-[1400px]">
         {/* First row of benefits */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-[68px]">
-          {benefitsData.slice(0, 3).map((benefit) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 lg:gap-[68px]">
+          {benefitsData.slice(0, 6).map((benefit) => (
             <CardBenefit key={benefit.id} className="border-none shadow-none">
-              <CardContent className="flex flex-col items-center gap-6 p-0">
-                {benefit.id === 1 ? (
-                  <div className="relative w-[60px] h-[60px]">
-                    <div className="relative w-[52px] h-[52px] top-1 left-1">
-                      <div className="absolute w-0.5 h-0.5 top-[47px] left-[37px] bg-[url(/group.png)] bg-[100%_100%]" />
-                      <div className="absolute w-[52px] h-[52px] top-0 left-0 bg-[url(/group-1.png)] bg-[100%_100%]" />
-                      <div className="absolute w-1.5 h-[11px] top-8 left-9 bg-[url(/group-2.png)] bg-[100%_100%]" />
-                      <div className="absolute w-0.5 h-0.5 top-3 left-[26px] bg-[url(/group-3.png)] bg-[100%_100%]" />
-                    </div>
-                  </div>
-                ) : (
+              <CardContent className="flex flex-col items-center p-0">
                   <img
-                    className="w-[60px] h-[60px]"
+                    className="w-[60px] h-[60px] mt-12"
                     alt={benefit.title}
                     src={benefit.icon}
                   />
-                )}
-
-                <h3 className="w-full font-[number:var(--h3-16-bold-font-weight)] text-black-1 text-[length:var(--h3-16-bold-font-size)] text-center leading-[var(--h3-16-bold-line-height)] font-h3-16-bold tracking-[var(--h3-16-bold-letter-spacing)] [font-style:var(--h3-16-bold-font-style)]">
+                <h3 className="w-full mt-6 font-[number:var(--h3-16-bold-font-weight)] text-black-1 text-[length:var(--h3-16-bold-font-size)] text-center leading-[var(--h3-16-bold-line-height)] font-h3-16-bold tracking-[var(--h3-16-bold-letter-spacing)] [font-style:var(--h3-16-bold-font-style)]">
                   {benefit.title}
                 </h3>
 
-                <p className="w-full font-h3-16-medium font-[number:var(--h3-16-medium-font-weight)] text-black-3 text-[length:var(--h3-16-medium-font-size)] text-center tracking-[var(--h3-16-medium-letter-spacing)] leading-[var(--h3-16-medium-line-height)] [font-style:var(--h3-16-medium-font-style)]">
+                <p className="w-full font-h3-16-medium mt-4 font-[number:var(--h3-16-medium-font-weight)] text-black-3 text-[length:var(--h3-16-medium-font-size)] text-center tracking-[var(--h3-16-medium-letter-spacing)] leading-[var(--h3-16-medium-line-height)] [font-style:var(--h3-16-medium-font-style)]">
                   {benefit.description}
                 </p>
               </CardContent>
@@ -90,37 +78,7 @@ export const BenefitsSection = (): JSX.Element => {
         </div>
 
         {/* Second row of benefits */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-[68px]">
-          {benefitsData.slice(3, 6).map((benefit) => (
-            <CardBenefit key={benefit.id} className="border-none shadow-none">
-              <CardContent className="flex flex-col items-center gap-6 p-0">
-                {benefit.id === 6 ? (
-                  <div className="relative w-[60px] h-[60px]">
-                    <img
-                      className="absolute w-[49px] h-[60px] top-0 left-[5px]"
-                      alt="Group"
-                      src={benefit.icon}
-                    />
-                  </div>
-                ) : (
-                  <img
-                    className="w-[60px] h-[60px]"
-                    alt={benefit.title}
-                    src={benefit.icon}
-                  />
-                )}
-
-                <h3 className="w-full font-[number:var(--h3-16-bold-font-weight)] text-black-1 text-[length:var(--h3-16-bold-font-size)] text-center leading-[var(--h3-16-bold-line-height)] font-h3-16-bold tracking-[var(--h3-16-bold-letter-spacing)] [font-style:var(--h3-16-bold-font-style)]">
-                  {benefit.title}
-                </h3>
-
-                <p className="w-full font-h3-16-medium font-[number:var(--h3-16-medium-font-weight)] text-black-3 text-[length:var(--h3-16-medium-font-size)] text-center tracking-[var(--h3-16-medium-letter-spacing)] leading-[var(--h3-16-medium-line-height)] [font-style:var(--h3-16-medium-font-style)]">
-                  {benefit.description}
-                </p>
-              </CardContent>
-            </CardBenefit>
-          ))}
-        </div>
+       
       </div>
     </section>
   );

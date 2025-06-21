@@ -52,8 +52,8 @@ const footerData = [
 
 export const FooterSection = (): JSX.Element => {
   return (
-    <footer className="flex flex-col items-center gap-8 mt-16 pt-28 pl-20 pr-20 pb-8 lg:px-24 bg-bg-1">
-      <div className="flex flex-col md:flex-row items-start gap-10 md:gap-[120px] w-full">
+    <footer className="flex flex-col items-center gap-8 pt-16 pl-8 pr-8 pb-8 lg:px-24 md:px-12 bg-bg-1">
+      <div className="flex flex-col md:flex-row items-start gap-10 md:gap-[80px] lg:gap-[120px] w-full">
         {footerData.map((column, index) => (
           <div key={index} className="flex flex-col items-start gap-7 flex-1">
             <h2 className="self-stretch mt-[-1.00px] font-h2-20-extra-bold font-[number:var(--h2-20-extra-bold-font-weight)] text-black-1 text-[length:var(--h2-20-extra-bold-font-size)] leading-[var(--h2-20-extra-bold-line-height)] tracking-[var(--h2-20-extra-bold-letter-spacing)] [font-style:var(--h2-20-extra-bold-font-style)]">

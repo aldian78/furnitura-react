@@ -3,14 +3,14 @@ import {Badge} from "../ui/badge";
 import {Button} from "../ui/button";
 import {Card, CardContent} from "../ui/card";
 import {Input} from "../ui/input";
-import { useNavigate } from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 
 export const AuthenticationCartSection = () : JSX.Element => {
-  const navigate = useNavigate();
+    const navigate = useNavigate();
 
-  const handleClick = () => {
-    navigate("/home")
-  }
+    const handleClick = () => {
+        navigate("/home")
+    }
 
     // Form fields data for mapping
     const formFields = [
@@ -39,13 +39,14 @@ export const AuthenticationCartSection = () : JSX.Element => {
 
     return (
         <section
-            className="flex w-full items-start gap-20 px-16 py-20 lg:px-[264px] lg:py-[82px]">
+            className="flex flex-col lg:flex-row w-full mb-10 items-start gap-20 px-6 lg:px-[280px] md:px-24 lg:mt-10">
             {/* Left side - Form section */}
-            <div className="flex flex-col items-start gap-[72px] relative flex-1">
+            <div
+                className="flex flex-col items-start gap-[72px] w-full relative flex-1 lg:mt-8 md:w-full">
                 {/* Header section */}
-                <div className="flex flex-col items-start gap-9 w-full">
+                <div className="flex flex-col items-start gap-4 w-full">
                     <h1
-                        className="w-full font-h1-32-extra-bold text-black-1 text-[32px] leading-[40px] tracking-[0px] font-extrabold">
+                        className="w-full font-h1-32-extra-bold text-black-1 lg:text-[32px] text-[26px] leading-[40px] tracking-[0px] font-extrabold">
                         YOUR INFORMATION
                     </h1>
 
@@ -71,6 +72,7 @@ export const AuthenticationCartSection = () : JSX.Element => {
                                     className="flex items-center py-3 border-b border-neutral-300 w-full">
                                     <Input
                                         id={field.id}
+                                        type="name"
                                         className="border-none focus-visible:ring-0 px-0 font-h3-16-medium text-black-3"
                                         placeholder={field.label}/>
                                 </div>
@@ -104,35 +106,28 @@ export const AuthenticationCartSection = () : JSX.Element => {
                 </div>
 
                 {/* Create account button */}
-                <Button onClick={handleClick}
-                    className="w-[336px] h-auto py-3 bg-black-1 text-bg-1 rounded-none font-h3-16-medium hover:bg-black-1/90">
-                    Create an account
-                </Button>
+                <div className="w-[380px] md:max-w-[322px] lg:max-w-[332px] w-full">
+                    <Button
+                        onClick={handleClick}
+                        className="w-full h-auto py-3 bg-black-1 text-bg-1 rounded-none font-h3-16-medium hover:bg-black-1/90">
+                        Create an account
+                    </Button>
+                </div>
             </div>
 
             {/* Right side - Promotional banner */}
-            <Card
-                className="hidden lg:block relative self-stretch w-[600px] bg-black-7 rounded-none border-none">
-                <CardContent className="p-0 relative">
-                    <div className="relative ml-20 w-[470px] h-[496px]">
-                        {/* Discount text */}
-                        <div
-                            className="absolute w-[184px] top-[275px] left-0 font-h1-32-extra-bold text-black-1 text-[32px] leading-[40px] font-extrabold">
-                            DISCOUNT 25% FOR NEW MEMBER
-                        </div>
+            <div className="w-[380px] w-full md:w-full lg:w-[600px] flex-shrink-0 lg:mt-8 lg:gap-[72px]">
+                <Card
+                    className="flex flex-col items-end gap-[72px] relative flex-1 lg:mt-8 md:w-full bg-black-7 rounded-none border-none">
+                    <CardContent className="p-6 h-full">
+                       <img
+                                className="top-0 flex w-[240px] h-[240px] mt-[-25px] lg:w-[420px] lg:h-[455px] lg:mt-[-25px] md:w-[320px] md:h-[300px] md:mr-[20px]"
+                                alt="Promotional lamps"
+                                src="/img-lampu.png"/>
+                    </CardContent>
 
-                        {/* Product image */}
-                        <img
-                            className="absolute w-[378px] h-[496px] top-0 left-[92px]"
-                            alt="Promotional lamps"
-                            src="/img.png"/> {/* Hot badge */}
-                        <Badge
-                            className="absolute top-56 left-0 px-2 py-1 bg-[#ce0000] text-black-8 rounded font-h3-16-bold">
-                            HOT
-                        </Badge>
-                    </div>
-                </CardContent>
-            </Card>
+                </Card>
+            </div>
         </section>
     );
 };
