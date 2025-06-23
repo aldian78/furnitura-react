@@ -20,7 +20,7 @@ const footerData = [
     ],
   },
   {
-    title: "COMPANY",
+    title: "ABOUT COMPANY",
     links: [
       "About Japan with love",
       "Contact Us",

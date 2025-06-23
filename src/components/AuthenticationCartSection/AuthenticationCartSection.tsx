@@ -116,12 +116,12 @@ export const AuthenticationCartSection = () : JSX.Element => {
             </div>
 
             {/* Right side - Promotional banner */}
-            <div className="w-[380px] w-full md:w-full lg:w-[600px] flex-shrink-0 lg:mt-8 lg:gap-[72px]">
+            <div className="w-[350px] w-full md:w-full lg:w-[600px] flex-shrink-0 lg:mt-8 lg:gap-[72px]">
                 <Card
                     className="flex flex-col items-end gap-[72px] relative flex-1 lg:mt-8 md:w-full bg-black-7 rounded-none border-none">
                     <CardContent className="p-6 h-full">
                        <img
-                                className="top-0 flex w-[240px] h-[240px] mt-[-25px] lg:w-[420px] lg:h-[455px] lg:mt-[-25px] md:w-[320px] md:h-[300px] md:mr-[20px]"
+                                className="top-0 flex w-[235px] h-[240px] mt-[-25px] lg:w-[420px] lg:h-[455px] lg:mt-[-25px] md:w-[320px] md:h-[300px] md:mr-[20px]"
                                 alt="Promotional lamps"
                                 src="/img-lampu.png"/>
                     </CardContent>
