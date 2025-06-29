@@ -134,7 +134,7 @@ export const CustomerReviewsSection = () : JSX.Element => {
                 </Button>
 
                 {/* Slides Container - Exact height and spacing */}
-                <div className="relative overflow-hidden h-[400px]">
+                <div className="relative overflow-hidden h-[450px]">
                     <div
                         className="flex transition-transform duration-500 ease-in-out h-full"
                         style={{

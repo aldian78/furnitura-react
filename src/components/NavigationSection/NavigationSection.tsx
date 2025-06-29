@@ -1,5 +1,6 @@
 import {Fragment, useState} from 'react'
 import {
+    Description,
     Dialog,
     DialogBackdrop,
     DialogPanel,
@@ -14,8 +15,16 @@ import {
     TabPanels
 } from '@headlessui/react'
 import {Bars3Icon, XMarkIcon} from '@heroicons/react/24/outline';
-import {SearchIcon} from "lucide-react";
+import {SearchIcon, ChevronDownIcon, Tv} from "lucide-react";
 import {InputSearch} from "../ui/input";
+import {
+    SquaresPlusIcon,
+    Bars3BottomLeftIcon,
+    FireIcon,
+    TrophyIcon,
+    LightBulbIcon,
+    TvIcon
+} from '@heroicons/react/24/outline'
 
 const navigation = {
     bestSeller: [
@@ -27,7 +36,8 @@ const navigation = {
                     name: 'Lamp Learn',
                     href: '#',
                     imageSrc: '/img-4.svg',
-                    imageAlt: 'Drawstring top with elastic loop closure and textured interior padding.'
+                    imageAlt: 'Drawstring top with elastic loop closure and textured interior padding.',
+                    icon: SquaresPlusIcon
                 }
             ]
         }
@@ -38,23 +48,35 @@ const navigation = {
             name: 'Products',
             items: [
                 {
-                    name: 'Tops',
-                    href: '#'
+                    name: 'All',
+                    href: '/Product',
+                    icon: Bars3BottomLeftIcon,
+                    description: "Semua produk terbaik"
+                }, {
+                    name: 'Best Seller',
+                    href: '#',
+                    icon: FireIcon,
+                    description: "Produk terbaik untuk anda"
                 }, {
                     name: 'Sofa',
-                    href: '#'
+                    href: '#',
+                    icon: TrophyIcon,
+                    description: "Semua sofa terbaik"
                 }, {
                     name: 'Hinging Light',
-                    href: '#'
+                    href: '#',
+                    icon: LightBulbIcon,
+                    description: "Semua Hinging terbaik"
                 }, {
-                    name: 'Coucc',
-                    href: '#'
+                    name: 'Chair',
+                    href: '#',
+                    icon: SquaresPlusIcon,
+                    description: "Semua Coucc terbaik"
                 }, {
                     name: 'Desk',
-                    href: '#'
-                }, {
-                    name: 'Lamp',
-                    href: '#'
+                    href: '#',
+                    icon: TvIcon,
+                    description: "Semua desk terbaik"
                 }
             ]
         }
@@ -98,7 +120,7 @@ export const NavigationSection = () : JSX.Element => {
 
                         {/* Links */}
                         <TabGroup className="mt-2">
-                          {/* Search */}
+                            {/* Search */}
                             <div className="flex lg:ml-6 border-b border-neutral-300 ml-4 mr-4 mb-8">
                                 <div className="flex items-center gap-3 px-0 py-2">
                                     <SearchIcon className="w-5 h-5"/>
@@ -175,7 +197,7 @@ export const NavigationSection = () : JSX.Element => {
                                         </TabPanel>
                                     ))}
                             </TabPanels>
-                            
+
                         </TabGroup>
 
                         <div className="space-y-6 border-t border-gray-200 px-4 py-6">
@@ -229,7 +251,7 @@ export const NavigationSection = () : JSX.Element => {
                         <div className="flex h-16 items-center">
                             {/* Logo */}
                             <div className="flex lg:ml-0">
-                                <a href="#">
+                                <a href="/">
                                     <span className="sr-only">Furnitura</span>
                                     <img alt="" src="/logo.svg?color=indigo&shade=600" className="h-8 w-auto"/>
                                 </a>
@@ -260,86 +282,42 @@ export const NavigationSection = () : JSX.Element => {
                                         {navigation
                                             .categories
                                             .map((category) => (
-                                                <Popover key={category.name} className="flex">
-                                                    <div className="relative flex">
-                                                        <PopoverButton
-                                                            className="relative z-10 -mb-px flex items-center border-b-2 border-transparent pt-px text-sm font-medium text-gray-700 transition-colors duration-200 ease-out hover:text-gray-800 data-open:border-indigo-600 data-open:text-indigo-600">
-                                                            {category.name}
-                                                        </PopoverButton>
-                                                    </div>
+                                                <Popover key={category.id} className="relative">
+                                                    <PopoverButton
+                                                        className="relative z-10 -mb-px flex items-center border-b-2 border-transparent pt-px text-sm font-medium text-gray-700 transition-colors duration-200 ease-out hover:text-gray-800 data-open:border-indigo-600 data-open:text-indigo-600 focus:outline-none focus:ring-0">
+                                                        {category.name}
+                                                        {/* <ChevronDownIcon aria-hidden="true" className="size-5" /> */}
+                                                    </PopoverButton>
 
                                                     <PopoverPanel
-                                                        transition
-                                                        className="absolute inset-x-0 top-full text-sm text-gray-500 transition data-closed:opacity-0 data-enter:duration-200 data-enter:ease-out data-leave:duration-150 data-leave:ease-in">
-                                                        {/* Presentational element used to render the bottom shadow, if we put the shadow on the actual panel it pokes out the top, so we use this shorter element to hide the top of the shadow */}
+                                                        className="absolute left-1/2 z-50 mt-5 flex w-screen max-w-max -translate-x-1/2 px-4">
                                                         <div
-                                                            aria-hidden="true"
-                                                            className="absolute inset-0 top-1/2 bg-white shadow-sm"/>
-
-                                                        <div className="relative bg-white">
-                                                            <div className="mx-auto max-w-7xl px-8">
-                                                                <div className="grid grid-cols-2 gap-x-8 gap-y-10 py-16">
-                                                                    <div className="col-start-2 grid grid-cols-2 gap-x-8">
-                                                                        {navigation
-                                                                            .bestSeller
-                                                                            .map((bestSell) => (
-                                                                                <TabPanel key={bestSell.name} className="space-y-10 px-4 pt-2 pb-8">
-                                                                                    <div className="grid grid-cols-1 gap-x-4">
-                                                                                        {bestSell
-                                                                                            .featured
-                                                                                            .map((item) => (
-                                                                                                <div key={item.name} className="group relative text-sm">
-                                                                                                    <img
-                                                                                                        alt={item.imageAlt}
-                                                                                                        src={item.imageSrc}
-                                                                                                        className="aspect-square w-[200px] h-[200px] rounded-lg bg-gray-100 object-cover group-hover:opacity-75"/>
-                                                                                                    <div className="flex flex-col items-center">
-                                                                                                        <a href={item.href} className="mt-6 block font-medium text-gray-900">
-                                                                                                            <span aria-hidden="true" className="absolute inset-0 z-10"/> {item.name}
-                                                                                                        </a>
-                                                                                                        <p aria-hidden="true" className="mt-1">
-                                                                                                            Shop now
-                                                                                                        </p>
-                                                                                                    </div>
-                                                                                                </div>
-                                                                                            ))}
-                                                                                    </div>
-
-                                                                                </TabPanel>
-                                                                            ))}
-                                                                    </div>
-                                                                    <div className="row-start-1 grid grid-cols-3 gap-x-8 gap-y-10 text-sm">
-                                                                        {navigation
-                                                                            .categories
-                                                                            .map((section) => (
-                                                                                <div key={section.name}>
-                                                                                    <p id={`${section.name}-heading`} className="font-medium text-gray-900">
-                                                                                        {section.name}
-                                                                                    </p>
-                                                                                    <ul
-                                                                                        role="list"
-                                                                                        aria-labelledby={`${section.name}-heading`}
-                                                                                        className="mt-6 space-y-6 sm:mt-4 sm:space-y-4">
-                                                                                        {section
-                                                                                            .items
-                                                                                            .map((item) => (
-                                                                                                <li key={item.name} className="flex">
-                                                                                                    <a href={item.href} className="hover:text-gray-800">
-                                                                                                        {item.name}
-                                                                                                    </a>
-                                                                                                </li>
-                                                                                            ))}
-                                                                                    </ul>
-                                                                                </div>
-                                                                            ))}
-                                                                    </div>
-                                                                </div>
+                                                            className="w-screen max-w-md flex-auto overflow-hidden rounded-3xl bg-white text-sm shadow-lg ring-1 ring-gray-900/5">
+                                                            <div className="p-4">
+                                                                {category
+                                                                    .items
+                                                                    .map((item) => (
+                                                                        <div
+                                                                            key={item.name}
+                                                                            className="group relative flex gap-x-6 rounded-lg p-4 hover:bg-gray-50">
+                                                                            <div
+                                                                                className="mt-1 flex size-11 flex-none items-center justify-center rounded-lg bg-gray-50 group-hover:bg-white">
+                                                                                <item.icon className="size-6 text-gray-600 group-hover:text-indigo-600"/>
+                                                                            </div>
+                                                                            <div>
+                                                                                <a href={item.href} className="font-semibold text-gray-900">
+                                                                                    {item.name}
+                                                                                    <span className="absolute inset-0"/>
+                                                                                </a>
+                                                                                <p className="mt-1 text-gray-600">{item.description}</p>
+                                                                            </div>
+                                                                        </div>
+                                                                    ))}
                                                             </div>
                                                         </div>
                                                     </PopoverPanel>
                                                 </Popover>
                                             ))}
-
                                         {navigation
                                             .pages
                                             .map((page) => (

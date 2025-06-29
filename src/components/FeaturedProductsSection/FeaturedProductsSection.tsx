@@ -1,5 +1,5 @@
 import {StarIcon} from "lucide-react";
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import {Card, CardContent} from "../ui/card";
 import {Tabs, TabsList, TabsTrigger} from "../ui/tabs";
 import {ChevronRightIcon} from "lucide-react";
@@ -112,7 +112,7 @@ export const FeaturedProductsSection = () : JSX.Element => {
 
                 <Tabs defaultValue="all" className="w-full">
                     <TabsList
-                        className="bg-transparent h-auto px-4 gap-12 flex w-full max-w-full overflow-x-auto snap-x snap-mandatory scrollbar-hide">
+                        className="bg-transparent px-4 pr-4 gap-6 flex overflow-x-auto scroll-smooth snap-x snap-mandatory scrollbar-hide">
                         {categories.map((category) => (
                             <TabsTrigger
                                 key={category.id}

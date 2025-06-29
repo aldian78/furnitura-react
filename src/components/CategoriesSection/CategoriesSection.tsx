@@ -182,7 +182,7 @@ export const CategoriesSection = (): JSX.Element => {
             <img
               key={index}
               className="absolute transition-transform duration-300 ease-in-out group-hover:scale-105 group-focus-within:scale-105
-              w-[90%] md:w-[90%] lg:w-[100%] xl:w-[90%] 2xl:w-[90%] max-w-[500px] h-auto left-1/2 -translate-x-1/2 top-[320px] md:top-[320px] lg:top-[430px] xl:top-[460px] 2xl:top-[500px]"
+              w-[90%] md:w-[90%] lg:w-[100%] xl:w-[90%] 2xl:w-[90%] max-w-[500px] h-auto left-1/2 -translate-x-1/2 top-[320px] mt-10 sm:mt-4 md:mt-4 md:top-[320px] lg:top-[430px] xl:top-[460px] 2xl:top-[500px]"
               alt={image.alt}
               src={image.src}
             />
