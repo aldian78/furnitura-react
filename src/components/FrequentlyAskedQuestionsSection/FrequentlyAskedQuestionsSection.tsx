@@ -39,7 +39,7 @@ export const FrequentlyAskedQuestionsSection = (): JSX.Element => {
   ];
 
   return (
-    <section className="flex flex-col items-center gap-[73px] py-[82px]">
+    <section className="flex flex-col items-center gap-[73px] px-4 py-10 md:px-12 lg:px-24 lg:mx-auto">
       <div className="flex flex-col items-center gap-9">
         <h2 className="font-h1-32-extra-bold font-[number:var(--h1-32-extra-bold-font-weight)] text-black-1 text-[length:var(--h1-32-extra-bold-font-size)] text-center tracking-[var(--h1-32-extra-bold-letter-spacing)] leading-[var(--h1-32-extra-bold-line-height)] [font-style:var(--h1-32-extra-bold-font-style)]">
           FRENQUENT QUESTION ANSWERS
@@ -50,7 +50,7 @@ export const FrequentlyAskedQuestionsSection = (): JSX.Element => {
         </p>
       </div>
 
-      <div className="w-full max-w-[852px]">
+      <div className="w-full">
         <Accordion
           type="single"
           collapsible

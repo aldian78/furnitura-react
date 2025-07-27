@@ -1,13 +1,7 @@
 import React from "react";
 import {useLocation} from 'react-router-dom';
 import {useMemo} from 'react';
-import {
-  CreditCardIcon,
-  EyeIcon,
-  ShoppingBagIcon,
-  UserIcon,
-} from "lucide-react";
-
+import {CreditCardIcon, EyeIcon, ShoppingBagIcon, UserIcon} from "lucide-react";
 
 export const CartSection = () : JSX.Element => {
     const location = useLocation();
@@ -49,7 +43,7 @@ export const CartSection = () : JSX.Element => {
         }, {
             id: 2,
             title: "CUSTOMER INFORMATION",
-            description: "Add your name, phone number and address.",
+            description: "Add your name, phne number and address.",
             icon: UserIcon,
             iconAlt: "User circle",
             isActive: true
@@ -72,51 +66,109 @@ export const CartSection = () : JSX.Element => {
 
     return (
         <section className="w-full py-20">
-            <div className="flex flex-col items-center gap-9 mb-16">
-                <h1
-                    className="font-h1-32-extra-bold font-[number:var(--h1-32-extra-bold-font-weight)] text-black-1 text-[length:var(--h1-32-extra-bold-font-size)] text-center tracking-[var(--h1-32-extra-bold-letter-spacing)] leading-[var(--h1-32-extra-bold-line-height)] [font-style:var(--h1-32-extra-bold-font-style)]">
-                    SHOPING CART
-                </h1>
-                <h2
-                    className="font-h3-16-bold font-[number:var(--h3-16-bold-font-weight)] text-black-3 text-[length:var(--h3-16-bold-font-size)] text-center leading-[var(--h3-16-bold-line-height)] tracking-[var(--h3-16-bold-letter-spacing)] [font-style:var(--h3-16-bold-font-style)]">
-                    THIS IS YOUR CART BASED ON WHAT YOU WANTED TO BY
-                </h2>
-            </div>
+            {/* Mode Dekstop */}
+            <div className="hidden md:block lg:block md:px-4">
+                <div className="flex flex-col items-center gap-9 mb-16">
+                    <h1
+                        className="font-h1-32-extra-bold font-[number:var(--h1-32-extra-bold-font-weight)] text-black-1 text-[length:var(--h1-32-extra-bold-font-size)] text-center tracking-[var(--h1-32-extra-bold-letter-spacing)] leading-[var(--h1-32-extra-bold-line-height)] [font-style:var(--h1-32-extra-bold-font-style)]">
+                        SHOPING CART
+                    </h1>
+                    <h2
+                        className="font-h3-16-bold font-[number:var(--h3-16-bold-font-weight)] text-black-3 text-[length:var(--h3-16-bold-font-size)] text-center leading-[var(--h3-16-bold-line-height)] tracking-[var(--h3-16-bold-letter-spacing)] [font-style:var(--h3-16-bold-font-style)]">
+                        THIS IS YOUR CART BASED ON WHAT YOU WANTED TO BY
+                    </h2>
+                </div>
 
-            {/* Progress bar */}
-            <div className="relative w-full max-w-[898px] h-2 mx-auto mb-9">
-                <div className="relative h-2">
-                    <div className="absolute w-full h-0.5 top-[3px] left-1 bg-black-5"/>
-                    <div
-                        className={`absolute h-0.5 top-[3px] left-1 bg-black-1 transition-all duration-300 ${stepWidths[currentStep]}`}/>
-                    <div className="absolute w-2 h-2 top-0 left-0 bg-black-1 rounded"/>
+                {/* Progress bar */}
+                <div className="relative w-full max-w-[898px] h-2 mx-auto mb-9">
+                    <div className="relative h-2">
+                        <div className="absolute w-full h-0.5 top-[3px] left-1 bg-black-5"/>
+                        <div
+                            className={`absolute h-0.5 top-[3px] left-1 bg-black-1 transition-all duration-300 ${stepWidths[currentStep]}`}/>
+                        <div className="absolute w-2 h-2 top-0 left-0 bg-black-1 rounded"/>
+                    </div>
+                </div>
+
+                {/* Checkout steps */}
+                <div className="flex w-full max-w-[1192px] mx-auto">
+                    {checkoutSteps.map((step) => (
+                        <div key={step.id} className="flex flex-col items-center gap-3 flex-1">
+                            <div
+                                className={`flex w-14 h-14 items-center justify-center p-2.5 rounded-full ${step.id <= currentStep
+                                ? "bg-black-1"
+                                : "bg-black-7"}`}>
+                                <step.icon
+                                    className="w-6 h-6"
+                                    color={step.id <= currentStep
+                                    ? "white"
+                                    : "#7E7F7C"}/>
+                            </div>
+                            <h3
+                                className="w-fit font-h3-16-bold font-[number:var(--h3-16-bold-font-weight)] text-black-1 text-base leading-[1.25rem] text-center tracking-[var(--h3-16-bold-letter-spacing)] [font-style:var(--h3-16-bold-font-style)]">
+                                {step.title}
+                            </h3>
+
+                            <p
+                                className="w-[170px] font-h4-14-medium font-[number:var(--h4-14-medium-font-weight)] text-black-3 text-[length:var(--h4-14-medium-font-size)] text-center tracking-[var(--h4-14-medium-letter-spacing)] leading-[var(--h4-14-medium-line-height)] [font-style:var(--h4-14-medium-font-style)]">
+                                {step.description}
+                            </p>
+                        </div>
+                    ))}
                 </div>
             </div>
 
-            {/* Checkout steps */}
-            <div className="flex w-full max-w-[1192px] mx-auto">
+            {/* Mode mobile phone */}
+            <div className="block md:hidden lg:hidden">
+                <div className="flex flex-col items-center gap-9 mb-16">
+                    <h1
+                        className="font-h1-32-extra-bold font-[number:var(--h1-32-extra-bold-font-weight)] text-black-1 text-[length:var(--h1-32-extra-bold-font-size)] text-center tracking-[var(--h1-32-extra-bold-letter-spacing)] leading-[var(--h1-32-extra-bold-line-height)] [font-style:var(--h1-32-extra-bold-font-style)]">
+                        SHOPING CART
+                    </h1>
+                    <h2
+                        className="font-h3-16-bold font-[number:var(--h3-16-bold-font-weight)] text-black-3 text-[length:var(--h3-16-bold-font-size)] text-center leading-[var(--h3-16-bold-line-height)] tracking-[var(--h3-16-bold-letter-spacing)] [font-style:var(--h3-16-bold-font-style)]">
+                        THIS IS YOUR CART BASED ON WHAT YOU WANTED TO BY
+                    </h2>
+                </div>
 
-                {checkoutSteps.map((step) => (
-          <div
-            key={step.id}
-            className="flex flex-col items-center gap-3 flex-1"
-          >
-            <div
-              className={`flex w-14 h-14 items-center justify-center p-2.5 rounded-full ${step.id <= currentStep ? "bg-black-1" : "bg-black-7"}`}
-            >
-              <step.icon
-                className="w-6 h-6"
-                color={step.id <= currentStep ? "white" : "#7E7F7C"}
-              />
-            </div>
-            <h3 className="w-fit font-h3-16-bold font-[number:var(--h3-16-bold-font-weight)] text-black-1 text-[length:var(--h3-16-bold-font-size)] leading-[var(--h3-16-bold-line-height)] whitespace-nowrap tracking-[var(--h3-16-bold-letter-spacing)] [font-style:var(--h3-16-bold-font-style)]">
-              {step.title}
-            </h3>
-            <p className="w-[170px] font-h4-14-medium font-[number:var(--h4-14-medium-font-weight)] text-black-3 text-[length:var(--h4-14-medium-font-size)] text-center tracking-[var(--h4-14-medium-letter-spacing)] leading-[var(--h4-14-medium-line-height)] [font-style:var(--h4-14-medium-font-style)]">
-              {step.description}
-            </p>
-          </div>
-        ))}
+                {/* Checkout steps */}
+                <div className="flex flex-col w-full max-w-[1192px] mx-auto">
+                    <div className="relative h-[80px] w-2 mx-auto">
+                        <div className="relative w-2 h-full">
+                            <div className="absolute h-full w-0.5 left-[3px] top-0 bg-black-5"/>
+                            <div
+                                className={`absolute w-0.5 left-[3px] bg-black-1 transition-all duration-300 h-[80px]`}/>
+                            <div className="absolute w-2 h-2 top-0 left-0 bg-black-1 rounded-full"/>
+                        </div>
+                    </div>
+
+                    {checkoutSteps.map((step, index) => (
+                        <div key={step.id} className="flex flex-col items-center gap-3 flex-1">
+                            <div
+                                className={`my-4 flex w-14 h-14 items-center justify-center p-2.5 rounded-full ${step.id <= currentStep
+                                ? "bg-black-1"
+                                : "bg-black-7"}`}>
+                                <step.icon
+                                    className="w-6 h-6"
+                                    color={step.id <= currentStep
+                                    ? "white"
+                                    : "#7E7F7C"}/>
+                            </div>
+                            <h3
+                                className="w-fit font-h3-16-bold font-[number:var(--h3-16-bold-font-weight)] text-black-1 text-[length:var(--h3-16-bold-font-size)] leading-[var(--h3-16-bold-line-height)] whitespace-nowrap tracking-[var(--h3-16-bold-letter-spacing)] [font-style:var(--h3-16-bold-font-style)]">
+                                {step.title}
+                            </h3>
+                            <p
+                                className="w-[170px] font-h4-14-medium font-[number:var(--h4-14-medium-font-weight)] text-black-3 text-[length:var(--h4-14-medium-font-size)] text-center tracking-[var(--h4-14-medium-letter-spacing)] leading-[var(--h4-14-medium-line-height)] [font-style:var(--h4-14-medium-font-style)]">
+                                {step.description}
+                            </p>
+                            {index !== checkoutSteps.length - 1 && (<div
+                                className={`py-4 left-1/2 -translate-x-1/2 h-12 w-0.5 z-0 ${currentStep > step.id
+                                ? "bg-black-1"
+                                : "bg-black-5"}`}/>)}
+
+                        </div>
+                    ))}
+                </div>
             </div>
         </section>
     );

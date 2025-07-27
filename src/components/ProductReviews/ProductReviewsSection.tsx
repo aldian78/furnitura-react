@@ -53,9 +53,9 @@ export const ProductReviewsSection = () : JSX.Element => {
             name: "Phoebe Kunis",
             date: "Mei, 15 2020",
             reviewProduct: "Great Product",
-            descProduct: "Perfect centerpiece for my home. Its chic design and comfortable cushions make" +
-                    " it ideal for lounging, and the high-quality materials mean it will last for yea" +
-                    "rs to come."
+            descProduct: "Perfect centerpiece for my home. Its chic design and comfortable cushions make i" +
+                    "t ideal for lounging, and the high-quality materials mean it will last for years" +
+                    " to come."
         }, {
             id: 3,
             image: "/img-7.png",
@@ -74,10 +74,9 @@ export const ProductReviewsSection = () : JSX.Element => {
     ];
 
     return (
-        <section
-            className="flex flex-wrap gap-20 py-20 md:px-12 lg:px-24 w-full">
-            <div className="grid grid-cols-[0.8fr_0.1fr_2fr] gap-4">
-                <div className="mt-8">
+        <section className="w-full px-4 md:px-8 mt-10 lg:px-24 lg:mb-20">
+            <div className="flex flex-wrap gap-12">
+                <div className="w-full md:w-1/2 lg:w-[40%] mt-8 flex flex-col">
                     <h2 className="font-bold text-black-1 w-full">
                         YOUR REVIEW
                     </h2>
@@ -85,19 +84,17 @@ export const ProductReviewsSection = () : JSX.Element => {
                         className="font-['Lato',Helvetica] font-medium text-black-3 text-base leading-7">
                         About mordern hanging bronze light
                     </p>
-                    <div
-                        className="flex items-center gap-3 px-0 py-3 border-b border-neutral-300 w-[350px]">
+                    <div className="w-full mt-8 border-b border-neutral-300 px-0 py-3">
                         <Input
-                            className="border-none p-0 h-auto font-lg font-medium text-black-3 placeholder:text-black-3 focus-visible:ring-0 focus-visible:ring-offset-0 mt-[70px]"
+                            className="w-full border-none p-0 h-auto font-lg font-medium text-black-3 placeholder:text-black-3 focus-visible:ring-0 focus-visible:ring-offset-0"
                             placeholder="Your Name"/>
                     </div>
-                    <div
-                        className="flex items-center gap-3 px-0 py-3 border-b border-neutral-300 w-[350px]">
+                    <div className="w-full mt-8 border-b border-neutral-300 px-0 py-3">
                         <Input
-                            className="border-none p-0 h-auto font-lg font-medium text-black-3 placeholder:text-black-3 focus-visible:ring-0 focus-visible:ring-offset-0 mt-[30px]"
+                            className="w-full border-none p-0 h-auto font-lg font-medium text-black-3 placeholder:text-black-3 focus-visible:ring-0 focus-visible:ring-offset-0"
                             placeholder="Your Email"/>
                     </div>
-                    <Accordion type="single" collapsible className="w-[350px] mt-[30px]">
+                    <Accordion type="single" collapsible className="w-full mt-[30px]">
                         <AccordionItem value="furniture" className="border-b border-neutral-300">
                             <AccordionTrigger className="font-lg font-medium text-black-1 py-3">
                                 Stars
@@ -117,26 +114,27 @@ export const ProductReviewsSection = () : JSX.Element => {
                             </AccordionContent>
                         </AccordionItem>
                     </Accordion>
+
                     <div
-                        className="flex items-center gap-3 px-0 py-3 border-b border-neutral-300 w-[350px]">
+                        className="flex items-center gap-3 px-0 py-3 border-b border-neutral-300 w-full">
                         <Input
-                            className="border-none p-0 h-auto font-lg font-medium text-black-3 placeholder:text-black-3 focus-visible:ring-0 focus-visible:ring-offset-0 mt-[30px] mb-[50px]"
+                            className="w-full border-none p-0 h-auto font-lg font-medium text-black-3 placeholder:text-black-3 focus-visible:ring-0 focus-visible:ring-offset-0 mt-[30px] mb-[50px]"
                             placeholder="This product is ...."/>
                     </div>
                     <Button
-                        className="w-[350px] h-auto p-3 bg-black-1 rounded-none hover:bg-black-1/90 mt-[60px]">
+                        className="w-full sm:w-full h-auto p-3 bg-black-1 rounded-none hover:bg-black-1/90 mt-[60px]">
                         <span
                             className="font-h3-16-medium font-[number:var(--h3-16-medium-font-weight)] text-bg-1 text-[length:var(--h3-16-medium-font-size)] tracking-[var(--h3-16-medium-letter-spacing)] leading-[var(--h3-16-medium-line-height)] [font-style:var(--h3-16-medium-font-style)]">
-                            BUY NOW
+                            REVEWS NOW
                         </span>
                     </Button>
                 </div>
-                <Separator
+                {/* <Separator
                     orientation="vertical"
-                    className="h-auto self-stretch hidden md:block mx-8"/>
-                <div className="flex flex-col pl-12">
+                    className="h-auto self-stretch hidden md:block mx-8"/> */}
+                <div className="flex-[1] flex-col">
                     {reviews.map((review, _) => (
-                        <div className="items-center">
+                        <div className="items-center pt-4">
                             <div className="mt-4 flex grid grid-cols-2">
                                 <div className="flex grid grid-cols-[0.2fr_0.5fr] gap-4 w-[250px]">
                                     <Avatar
