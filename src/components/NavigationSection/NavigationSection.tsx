@@ -1,6 +1,5 @@
 import {Fragment, useState} from 'react'
 import {
-    Description,
     Dialog,
     DialogBackdrop,
     DialogPanel,
@@ -12,10 +11,11 @@ import {
     TabGroup,
     TabList,
     TabPanel,
-    TabPanels
+    TabPanels,
+    Menu, MenuButton, MenuItem, MenuItems
 } from '@headlessui/react'
 import {Bars3Icon, XMarkIcon} from '@heroicons/react/24/outline';
-import {SearchIcon, ChevronDownIcon, Tv} from "lucide-react";
+import {SearchIcon} from "lucide-react";
 import {InputSearch} from "../ui/input";
 import {
     SquaresPlusIcon,
@@ -23,8 +23,15 @@ import {
     FireIcon,
     TrophyIcon,
     LightBulbIcon,
-    TvIcon
-} from '@heroicons/react/24/outline'
+    TvIcon,
+    ShoppingCartIcon,
+    HeartIcon
+} from '@heroicons/react/24/outline';
+
+import { useAuth } from "../../context/authContext";
+import authService from "../../api/authentication";
+import {toast} from "react-toastify";
+import {useNavigate} from "react-router-dom";
 
 const navigation = {
     bestSeller: [
@@ -93,8 +100,29 @@ const navigation = {
 }
 
 export const NavigationSection = () : JSX.Element => {
+    const navigate = useNavigate();
+
     const [open,
         setOpen] = useState(false)
+
+    // const [user, setUser] = useState<any>(null);
+
+    const { token, setToken } = useAuth();   
+
+    const handleLogout = async () => {
+        try {
+            const res = await authService.logout();
+            console.log("Logout success", res);
+
+            setToken(null); // hapus token + clear user otomatis
+
+            toast.success("Berhasil logout.");
+            navigate("/"); // redirect ke login
+        } catch (err: any) {
+            console.error("Logout error:", err);
+            toast.error(err.message || "Logout gagal!");
+        }
+    };
 
     return (
         <div className="bg-white">
@@ -212,18 +240,28 @@ export const NavigationSection = () : JSX.Element => {
                                 ))}
                         </div>
 
-                        <div className="space-y-6 border-t border-gray-200 px-4 py-6">
-                            <div className="flow-root">
-                                <a href="#" className="-m-2 block p-2 font-medium text-gray-900">
-                                    Sign in
-                                </a>
-                            </div>
-                            <div className="flow-root">
-                                <a href="#" className="-m-2 block p-2 font-medium text-gray-900">
-                                    Create account
-                                </a>
-                            </div>
-                        </div>
+                        {token
+                            ? (
+                                <div className="flow-root">
+                                    <a href="/profile" className="-m-2 block p-2 font-medium text-gray-900">
+                                        Profile
+                                    </a>
+                                </div>
+                            )
+                            : (
+                                <div className="space-y-6 border-t border-gray-200 px-4 py-6">
+                                    <div className="flow-root">
+                                        <a href="#" className="-m-2 block p-2 font-medium text-gray-900">
+                                            Sign in
+                                        </a>
+                                    </div>
+                                    <div className="flow-root">
+                                        <a href="#" className="-m-2 block p-2 font-medium text-gray-900">
+                                            Create account
+                                        </a>
+                                    </div>
+                                </div>
+                            )}
 
                         {/* <div className="border-t border-gray-200 px-4 py-6">
                             <a href="#" className="-m-2 flex items-center p-2">
@@ -332,27 +370,90 @@ export const NavigationSection = () : JSX.Element => {
                                 </PopoverGroup>
                             </div>
                             <div className="ml-auto flex items-center">
-                                <div
-                                    className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
-                                    <a href="/register" className="text-sm font-medium text-gray-700 hover:text-gray-800">
-                                        Sign in
-                                    </a>
-                                    <span aria-hidden="true" className="h-6 w-px bg-gray-200"/>
-                                    <a href="#" className="text-sm font-medium text-gray-700 hover:text-gray-800">
-                                        Create account
-                                    </a>
-                                </div>
+                                {token
+                                    ? (
+                                        <div className="hidden lg:ml-8 lg:flex">
+                                            <div className="flex items-center text-gray-700 hover:text-gray-800">
+                                                <span className="p-2 rounded-full hover:bg-gray-300 transition">
+                                                    <a href='/cart'>
+                                                        <ShoppingCartIcon className="w-5 h-5" />
+                                                    </a>
+                                                </span>
+                                                <span className="p-2 rounded-full hover:bg-gray-300 transition">
+                                                    <a href='/whithlist'>
+                                                        <HeartIcon className="w-5 h-5" />
+                                                    </a>
+                                                </span>
+                                            </div>
+                                            <Menu as="div" className="relative inline-block">
+                                                <MenuButton className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 focus:outline-none focus:ring-0 hover:bg-transparent active:bg-transparent p-0">
+                                                <img
+                                                        alt=""
+                                                        src="/profile.jpg"
+                                                        className="inline-block size-8 rounded-full ring-2 ring-white outline-none"/>
+                                                </MenuButton>
 
-                                {/* <div className="hidden lg:ml-8 lg:flex">
-                                    <a href="#" className="flex items-center text-gray-700 hover:text-gray-800">
-                                        <img
-                                            alt=""
-                                            src="https://tailwindcss.com/plus-assets/img/flags/flag-canada.svg"
-                                            className="block h-auto w-5 shrink-0"/>
-                                        <span className="ml-3 block text-sm font-medium">CAD</span>
-                                        <span className="sr-only">, change currency</span>
-                                    </a>
-                                </div> */}
+                                                <MenuItems
+                                                    transition
+                                                    className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white outline-white transition data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in"
+                                                >
+                                                    <div className="py-1">
+                                                    <MenuItem>
+                                                        <a
+                                                        href="#"
+                                                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                                                        >
+                                                        Account settings
+                                                        </a>
+                                                    </MenuItem>
+                                                    <MenuItem>
+                                                        <a
+                                                        href="#"
+                                                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                                                        >
+                                                        Support
+                                                        </a>
+                                                    </MenuItem>
+                                                    <MenuItem>
+                                                        <a
+                                                        href="#"
+                                                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                                                        >
+                                                        License
+                                                        </a>
+                                                    </MenuItem>
+                                                        <MenuItem>
+                                                        <button
+                                                            onClick={handleLogout}
+                                                            type="submit"
+                                                            className="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                                                        >
+                                                            Sign out
+                                                        </button>
+                                                        </MenuItem>
+                                                    </div>
+                                                </MenuItems>
+                                            </Menu>
+                                    </div>
+                                            
+                                    )
+                                    : (
+                                        <div
+                                            className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
+                                            <a
+                                                href="/login"
+                                                className="text-sm font-medium text-gray-700 hover:text-gray-800">
+                                                Sign in
+                                            </a>
+                                            <span aria-hidden="true" className="h-6 w-px bg-gray-200"/>
+                                            <a
+                                                href="/register"
+                                                className="text-sm font-medium text-gray-700 hover:text-gray-800">
+                                                Create account
+                                            </a>
+                                        </div>
+                                    )}
+                                
 
                                 <button
                                     type="button"

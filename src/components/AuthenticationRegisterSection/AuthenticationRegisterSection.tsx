@@ -1,0 +1,149 @@
+import React, {useState} from "react";
+import {Button} from "../ui/button";
+import {Card, CardContent} from "../ui/card";
+import {Input} from "../ui/input";
+
+import {useNavigate} from "react-router-dom";
+import authService from "../../api/authentication";
+
+type RegisterForm = {
+    fullName: string;
+    email: string;
+    phoneNumber: string;
+    password: string;
+    passwordConfirmation: string;
+};
+
+export const AuthenticationRegisterSection = () : JSX.Element => {
+    const navigate = useNavigate();
+
+    const [form,
+        setForm] = useState < RegisterForm > ({fullName: "", email: "", phoneNumber: "", password: "", passwordConfirmation: ""});
+    
+
+    const handleChange = (e : React.ChangeEvent < HTMLInputElement >) => {
+        const {id, value} = e.target;
+        setForm((prev) => ({
+            ...prev,
+            [id]: value
+        }));
+    };
+
+    const handleSubmit = async() => {
+        try {
+            const res = await authService.register(form.fullName, form.email, form.phoneNumber, form.password, form.passwordConfirmation);
+            console.log("Register success:", res);
+
+            navigate("/login", { state: { successMsg: "Register berhasil! Silakan login." }, replace: true });
+        } catch (err) {
+            console.error("Register failed:", err);
+            alert("Register gagal, coba lagi!");
+        }
+    };
+
+    return (
+        <section
+            className="flex flex-col lg:flex-row w-full mb-10 items-start gap-20 px-6 lg:px-[280px] md:px-24 lg:mt-10">
+            {/* Left side - Form section */}
+            <div
+                className="flex flex-col items-start gap-[72px] w-full relative flex-1 lg:mt-8 md:w-full">
+                {/* Header section */}
+                <div className="flex flex-col items-start gap-4 w-full">
+                    <h1
+                        className="w-full font-h1-32-extra-bold text-black-1 lg:text-[32px] text-[26px] leading-[40px] tracking-[0px] font-extrabold">
+                        YOUR INFORMATION
+                    </h1>
+
+                    <p className="w-full font-h3-16-medium text-black-3 text-[16px] leading-[20px] flex gap-1">
+                        <span className="text-[#7e7f7c]">You already have an account ? 
+                        </span>
+                        <span className="text-[#2f302c] underline cursor-pointer">
+                            <a href="/login" className="text-sm font-medium text-gray-700 hover:text-gray-800">
+                                Sign in here
+                            </a>
+                        </span>
+                    </p>
+                </div>
+
+                {/* Form fields */}
+                <div className="flex flex-col items-start gap-10 w-full">
+                    <div className="flex flex-col md:flex-row items-start gap-10 w-full">
+                        <div className="flex items-center py-3 border-b border-neutral-300 w-full">
+                            <Input
+                                id="fullName"
+                                type="text"
+                                className="border-none focus-visible:ring-0 px-0 font-h3-16-medium text-black-3"
+                                placeholder="Your Name"
+                                value={form.fullName}
+                                onChange={handleChange}/>
+                        </div>
+
+                        <div className="flex items-center py-3 border-b border-neutral-300 w-full">
+                            <Input
+                                id="email"
+                                type="text"
+                                className="border-none focus-visible:ring-0 px-0 font-h3-16-medium text-black-3"
+                                placeholder="E-mail"
+                                value={form.email}
+                                onChange={handleChange}/>
+                        </div>
+                    </div>
+
+                    <div className="flex items-center py-3 border-b border-neutral-300 w-full">
+                        <Input
+                            id="phoneNumber"
+                            type="text"
+                            className="border-none focus-visible:ring-0 px-0 font-h3-16-medium text-black-3"
+                            placeholder="Phone number"
+                            value={form.phoneNumber}
+                            onChange={handleChange}/>
+                    </div>
+
+                    <div className="flex flex-col md:flex-row items-start gap-10 w-full">
+                        <div className="flex items-center py-3 border-b border-neutral-300 w-full">
+                            <Input
+                                id="password"
+                                type="password"
+                                className="border-none focus-visible:ring-0 px-0 font-h3-16-medium text-black-3"
+                                placeholder="Password"
+                                value={form.password}
+                                onChange={handleChange}/>
+                        </div>
+
+                        <div className="flex items-center py-3 border-b border-neutral-300 w-full">
+                            <Input
+                                id="passwordConfirmation"
+                                type="password"
+                                className="border-none focus-visible:ring-0 px-0 font-h3-16-medium text-black-3"
+                                placeholder="Password Confirmation"
+                                value={form.passwordConfirmation}
+                                onChange={handleChange}/>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="w-[380px] md:max-w-[322px] lg:max-w-[332px] w-full">
+                    <Button
+                        onClick={handleSubmit}
+                        className="w-full h-auto py-3 bg-black-1 text-bg-1 rounded-none font-h3-16-medium hover:bg-black-1/90">
+                        Create an account
+                    </Button>
+                </div>
+            </div>
+
+            {/* Right side - Promotional banner */}
+            <div
+                className="w-[350px] w-full md:w-full lg:w-[600px] flex-shrink-0 lg:mt-8 lg:gap-[72px]">
+                <Card
+                    className="flex flex-col items-end gap-[72px] relative flex-1 lg:mt-8 md:w-full bg-black-7 rounded-none border-none">
+                    <CardContent className="p-6 h-full">
+                        <img
+                            className="top-0 flex w-[235px] h-[240px] mt-[-25px] lg:w-[420px] lg:h-[455px] lg:mt-[-25px] md:w-[320px] md:h-[300px] md:mr-[20px]"
+                            alt="Promotional lamps"
+                            src="/img-lampu.png"/>
+                    </CardContent>
+                </Card>
+            </div>
+        </section>
+    );
+};

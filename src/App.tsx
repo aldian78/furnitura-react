@@ -10,8 +10,15 @@ import { ShippingAndPayment } from './pages/User/ShippingAndPayment';
 import ReviewYourOrder from './pages/User/ReviewOrder';
 import TrackingOrders from './pages/User/TrackingOrder';
 import Register from './pages/User/Register';
+import Login from './pages/User/Login';
+
+import { ToastContainer, Bounce } from "react-toastify";
 
 const router = createBrowserRouter([
+  {
+    path: "/login",
+    element: <Login />,
+  },
   {
     path: "/register",
     element: <Register />,
@@ -51,11 +58,23 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
     <>
         <RouterProvider router={router} />
+        {/* app content */}
+       <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        transition={Bounce}
+      />
     </>
   )
 }

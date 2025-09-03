@@ -1,1 +1,0 @@
-export { AuthenticationCartSection } from "./AuthenticationCartSection";

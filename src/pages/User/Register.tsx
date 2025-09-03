@@ -1,6 +1,6 @@
 import React from "react";
 import { BenefitsSection } from "../../components/BenefitsSection";
-import { AuthenticationCartSection } from "../../components/AuthenticationCartSection";
+import { AuthenticationRegisterSection } from "../../components/AuthenticationRegisterSection";
 import { FooterSection } from "../../components/FooterSection";
 import { RegistrationTitleSection } from "../../components/RegistrationTitleSection";
 
@@ -8,7 +8,7 @@ export const Register = (): JSX.Element => {
   return (
     <div className="flex flex-col w-full min-h-screen bg-bg-1">
       <RegistrationTitleSection />
-      <AuthenticationCartSection />
+      <AuthenticationRegisterSection />
       <BenefitsSection />
       <FooterSection />
     </div>

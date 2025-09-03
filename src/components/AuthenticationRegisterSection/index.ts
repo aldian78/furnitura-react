@@ -1,0 +1,1 @@
+export { AuthenticationRegisterSection } from "./AuthenticationRegisterSection";
