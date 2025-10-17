@@ -1,11 +1,11 @@
 import {ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon, LayoutGridIcon, MenuIcon} from "lucide-react";
-import {useState} from 'react'
+import {useEffect, useState} from 'react'
 import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from "../../components/ui/accordion";
 import {Badge} from "../../components/ui/badge";
 import {Breadcrumb, BreadcrumbItem, BreadcrumbLink} from "../../components/ui/breadcrumb";
 import {Button} from "../../components/ui/button";
 import {Pagination, PaginationContent, PaginationItem, PaginationLink} from "../../components/ui/pagination";
-import {AdjustmentsVerticalIcon, ExclamationTriangleIcon, XMarkIcon} from '@heroicons/react/24/outline'
+import {AdjustmentsVerticalIcon, XMarkIcon} from '@heroicons/react/24/outline'
 import {Separator} from "../../components/ui/separator";
 import {Slider} from "../../components/ui/slider";
 import {Dialog, DialogBackdrop, DialogPanel, DialogTitle} from '@headlessui/react'
@@ -14,8 +14,124 @@ import {FooterSection} from "../../components/FooterSection/FooterSection";
 import {HeroSection} from "../../components/HeroSection";
 import {NavigationSection} from "../../components/NavigationSection";
 import {ProductGridSection} from "../../components/ProductGridSection";
+import product from "../../api/products";
+import {toast} from "react-toastify";
+
+
+type Product = {
+  id: string;
+  name: string;
+  price: string;
+  image_url: string;
+  description: string;
+  title: string;
+};
+
+type PaginationInfo = {
+  currentPage: number;
+  totalPageCount: number;
+  itemPerPage: number;
+  totalData: number;
+};
 
 export const ProductSection = () : JSX.Element => {
+     const [products, setProducts] = useState<Product[]>([]);
+  const [currentPage, setCurrentPage] = useState<number>(1); // halaman aktif
+   const [pagination, setPagination] = useState<PaginationInfo>({
+    currentPage: 1,
+    totalPageCount: 1,
+    itemPerPage: 6,
+    totalData: 0,
+  });
+  const [loading, setLoading] = useState<boolean>(false);
+
+  // fetchProducts menerima page, tapi dipanggil dari useEffect saat currentPage berubah
+  const fetchProducts = async (page: number) => {
+    try {
+      setLoading(true);
+      const res = await product.ProductList({
+        pagination: {
+          currentPage: page.toString(),
+          itemPerPage: pagination.itemPerPage.toString() || "6",
+        },
+      });
+
+      if (res.data?.[0]) {
+        const items: Product[] = res.data[0].data || [];
+        const pInfo = res.data[0].pagination;
+
+        // replace data (karena ini pagination biasa, bukan infinite scroll)
+        setProducts(items);
+
+        setPagination({
+          currentPage: pInfo.current_page,
+          totalPageCount: pInfo.total_page_count,
+          itemPerPage: pInfo.item_per_page,
+          totalData: pInfo.total_item_count,
+        });
+      } else {
+        // kosongkan jika tidak ada
+        setProducts([]);
+      }
+    } catch (err) {
+      toast.error("Gagal ambil produk. Silahkan coba lagi!", { toastId: "get-product" });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // useEffect pemanggil: setiap kali currentPage berubah, fetch page itu
+  useEffect(() => {
+    fetchProducts(currentPage);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage]);
+
+  // handler klik page
+  const handlePageChange = (page: number) => {
+    if (page < 1 || page > pagination.totalPageCount) return;
+    setCurrentPage(page); // ini memicu useEffect -> fetchProducts(page)
+  };
+
+  // helper: buat daftar page (dengan ellipsis jika banyak)
+   const getPaginationItems = () => {
+    const total = pagination.totalPageCount;
+    const current = pagination.currentPage;
+    const maxVisible = 10;
+    const pages: { page: number; active: boolean }[] = [];
+
+    let start = 1;
+    let end = total;
+
+    if (total > maxVisible) {
+      if (current <= 6) {
+        start = 1;
+        end = maxVisible;
+      } else if (current >= total - 4) {
+        start = total - 9;
+        end = total;
+      } else {
+        start = current - 4;
+        end = current + 5;
+      }
+    }
+
+    for (let i = start; i <= end; i++) {
+      pages.push({ page: i, active: i === current });
+    }
+
+    return pages;
+  };
+
+   const paginationItems = getPaginationItems();
+
+  const startItem =
+    (pagination.currentPage - 1) * pagination.itemPerPage + 1;
+  const endItem = Math.min(
+    pagination.currentPage * pagination.itemPerPage,
+    pagination.totalData
+  );
+
+
     // Category data
     const categoryItems = [
         {
@@ -66,18 +182,18 @@ export const ProductSection = () : JSX.Element => {
     ];
 
     // Pagination data
-    const paginationItems = [
-        {
-            page: "01",
-            active: true
-        }, {
-            page: "02",
-            active: false
-        }, {
-            page: "03",
-            active: false
-        }
-    ];
+    // const paginationItems = [
+    //     {
+    //         page: "01",
+    //         active: true
+    //     }, {
+    //         page: "02",
+    //         active: false
+    //     }, {
+    //         page: "03",
+    //         active: false
+    //     }
+    // ];
     const [open,
         setOpen] = useState(false);
     const [priceRange,
@@ -471,17 +587,21 @@ export const ProductSection = () : JSX.Element => {
                                     </div>
                                 </div>
                                 <span className="lg:block hidden font-h3-16-medium text-black-1 text-center whitespace-nowrap">
-                                    SHOWING 1 - 9 OF 30 PRODUCTS
+                                   SHOWING {pagination.totalData === 0 ? 0 : startItem} -{" "}
+        {pagination.totalData === 0 ? 0 : endItem} OF{" "}
+        {pagination.totalData} PRODUCTS
                                 </span>
                             </div>
                             <span className="lg:hidden block font-h3-16-medium text-black-1 text-left whitespace-nowrap">
-                                SHOWING 1 - 9 OF 30 PRODUCTS
+                                SHOWING {pagination.totalData === 0 ? 0 : startItem} -{" "}
+        {pagination.totalData === 0 ? 0 : endItem} OF{" "}
+        {pagination.totalData} PRODUCTS
                             </span>
 
                             {/* Product sections with improved spacing */}
                             <div className="space-y-12">
                                 {/* <FeaturedProductsSection /> */}
-                                <ProductGridSection/>
+                                <ProductGridSection products={products}/>
                             </div>
 
                             {/* Call to action section - constrained to content width */}
@@ -494,26 +614,44 @@ export const ProductSection = () : JSX.Element => {
                                 <Pagination>
                                     <PaginationContent className="flex items-center gap-4">
                                         <PaginationItem>
+                                        <PaginationLink
+                                            onClick={() => handlePageChange(pagination.currentPage - 1)}
+                                            className={`w-10 h-10 flex items-center justify-center bg-black-7 text-black-1 rounded-none border-0 ${
+                                            pagination.currentPage === 1
+                                                ? "bg-black-1 text-black-8 cursor-not-allowed"
+                                                : "bg-black text-white hover:bg-gray-800"
+                                            }`}
+                                        >
+                                            <ChevronLeftIcon className="h-5 w-5" />
+                                        </PaginationLink>
+                                        </PaginationItem>
+
+                                        {paginationItems.map((item, index) => (
+                                        <PaginationItem key={index}>
                                             <PaginationLink
-                                                className="w-10 h-10 flex items-center justify-center bg-black-7 text-black-1 rounded-none border-0">
-                                                <ChevronLeftIcon className="h-5 w-5"/>
+                                            onClick={() => handlePageChange(item.page)}
+                                            className={`w-10 h-10 flex items-center justify-center rounded-none border-0 font-h3-16-medium ${
+                                                item.active
+                                                ? "bg-black-1 text-black-8"
+                                                : "bg-black-7 text-black-1 hover:bg-black-5"
+                                            }`}
+                                            >
+                                            {item.page}
                                             </PaginationLink>
                                         </PaginationItem>
-                                        {paginationItems.map((item, index) => (
-                                            <PaginationItem key={index}>
-                                                <PaginationLink
-                                                    className={`w-10 h-10 flex items-center justify-center rounded-none border-0 font-h3-16-medium ${item.active
-                                                    ? "bg-black-1 text-black-8"
-                                                    : "bg-black-7 text-black-1 hover:bg-black-5"}`}>
-                                                    {item.page}
-                                                </PaginationLink>
-                                            </PaginationItem>
                                         ))}
+
                                         <PaginationItem>
-                                            <PaginationLink
-                                                className="w-10 h-10 flex items-center justify-center bg-black-1 text-black-8 rounded-none border-0">
-                                                <ChevronRightIcon className="h-5 w-5"/>
-                                            </PaginationLink>
+                                        <PaginationLink
+                                            onClick={() => handlePageChange(pagination.currentPage + 1)}
+                                            className={`w-10 h-10 flex items-center justify-center bg-black-7 text-black-1 rounded-none border-0 ${
+                                            pagination.currentPage === pagination.totalPageCount
+                                                ? "bg-black-1 text-black-8 cursor-not-allowed"
+                                                : "bg-black text-white hover:bg-gray-800"
+                                            }`}
+                                        >
+                                            <ChevronRightIcon className="h-5 w-5" />
+                                        </PaginationLink>
                                         </PaginationItem>
                                     </PaginationContent>
                                 </Pagination>

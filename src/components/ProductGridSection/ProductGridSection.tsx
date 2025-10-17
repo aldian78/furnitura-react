@@ -1,43 +1,22 @@
 import {StarIcon} from "lucide-react";
-import React from "react";
+import {useEffect, useState} from "react";
 import {Card, CardContent} from "../ui/card";
+import product from "../../api/products";
+import {toast} from "react-toastify";
 
-// Product data for mapping
-const products = [
-    {
-        id: 1,
-        image: "/img-3.svg",
-        title: "MORDERN BLACK HANGING LIGHT",
-        price: "$2352.41"
-    }, {
-        id: 2,
-        image: "/img-5.svg",
-        title: "MORDERN BLACK HANGING LIGHT",
-        price: "$2352.41"
-    }, {
-        id: 3,
-        image: "/img-7.svg",
-        title: "MORDERN BLACK HANGING LIGHT",
-        price: "$2352.41"
-    }, {
-        id: 4,
-        image: "/img-4.svg",
-        title: "MORDERN BLACK HANGING LIGHT",
-        price: "$2352.41"
-    }, {
-        id: 5,
-        image: "/img-1.svg",
-        title: "MORDERN BLACK HANGING LIGHT",
-        price: "$2352.41"
-    }, {
-        id: 6,
-        image: "/img-2.svg",
-        title: "MORDERN BLACK HANGING LIGHT",
-        price: "$2352.41"
-    }
-];
+interface Product {
+  id: string;
+  name: string;
+  price: string;
+  image_url: string;
+  description: string;
+  title: string;
+}
+interface Props {
+  products: Product[];
+}
 
-export const ProductGridSection = () : JSX.Element => {
+export const ProductGridSection = ({ products }: Props) : JSX.Element => {
     return (
         // <section className="w-full grid grid-flow-col grid-rows-3 gap-6">
         <section className="w-full grid grid-cols-2 gap-6 lg:grid-cols-3">
@@ -46,14 +25,14 @@ export const ProductGridSection = () : JSX.Element => {
                     <CardContent className="flex flex-col items-center gap-4 p-0">
                         <img
                             className="w-full h-[180px] lg:h-[330px] md:h-[330px] object-cover transition-transform duration-300 ease-in-out group-hover:scale-102"
-                            alt={product.title}
-                            src={product.image}/>
+                            alt={product.name}
+                            src={product.image_url}/>
 
                         <div className="flex flex-col items-center gap-3 w-full">
                             <h3
                                 className="self-stretch mt-[-1.00px] font-h3-16-medium font-[number:var(--h3-16-medium-font-weight)] text-black-1 text-[length:var(--h3-16-medium-font-size)] text-center tracking-[var(--h3-16-medium-letter-spacing)] leading-[var(--h3-16-medium-line-height)] [font-style:var(--h3-16-medium-font-style)]">
                                 <a href={"product-detail"} className="font-h3-16-bold text-black-1">
-                                    {product.title}
+                                    {product.name}
                                 </a>
                             </h3>
 
