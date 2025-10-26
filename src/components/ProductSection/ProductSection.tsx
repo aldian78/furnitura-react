@@ -8,196 +8,256 @@ import {Pagination, PaginationContent, PaginationItem, PaginationLink} from "../
 import {AdjustmentsVerticalIcon, XMarkIcon} from '@heroicons/react/24/outline'
 import {Separator} from "../../components/ui/separator";
 import {Slider} from "../../components/ui/slider";
-import {Dialog, DialogBackdrop, DialogPanel, DialogTitle} from '@headlessui/react'
+import {Dialog, DialogBackdrop, DialogPanel} from '@headlessui/react'
 import {CallToActionSection} from "../../components/CallToActionSection";
 import {FooterSection} from "../../components/FooterSection/FooterSection";
 import {HeroSection} from "../../components/HeroSection";
 import {NavigationSection} from "../../components/NavigationSection";
 import {ProductGridSection} from "../../components/ProductGridSection";
+import { formatRupiah } from "../../utils/formatCurrency";
 import product from "../../api/products";
+import category from "../../api/category";
 import {toast} from "react-toastify";
 
-
 type Product = {
-  id: string;
-  name: string;
-  price: string;
-  image_url: string;
-  description: string;
-  title: string;
+    id: string;
+    name: string;
+    price: string;
+    image_url: string;
+    description: string;
+    title: string;
 };
 
 type PaginationInfo = {
-  currentPage: number;
-  totalPageCount: number;
-  itemPerPage: number;
-  totalData: number;
+    currentPage: number;
+    totalPageCount: number;
+    itemPerPage: number;
+    totalData: number;
 };
 
 export const ProductSection = () : JSX.Element => {
-     const [products, setProducts] = useState<Product[]>([]);
-  const [currentPage, setCurrentPage] = useState<number>(1); // halaman aktif
-   const [pagination, setPagination] = useState<PaginationInfo>({
-    currentPage: 1,
-    totalPageCount: 1,
-    itemPerPage: 6,
-    totalData: 0,
-  });
-  const [loading, setLoading] = useState<boolean>(false);
+    const [products,
+        setProducts] = useState < Product[] > ([]);
+    const [currentPage,
+        setCurrentPage] = useState < number > (1); // halaman aktif
+    const [pagination,
+        setPagination] = useState < PaginationInfo > ({currentPage: 1, totalPageCount: 1, itemPerPage: 6, totalData: 0});
+    const [loading,
+        setLoading] = useState < boolean > (false);
 
-  // fetchProducts menerima page, tapi dipanggil dari useEffect saat currentPage berubah
-  const fetchProducts = async (page: number) => {
-    try {
-      setLoading(true);
-      const res = await product.ProductList({
-        pagination: {
-          currentPage: page.toString(),
-          itemPerPage: pagination.itemPerPage.toString() || "6",
-        },
-      });
+    // fetchProducts menerima page, tapi dipanggil dari useEffect saat currentPage
+    // berubah
+    const fetchProducts = async(page : number, categoryId?: string | null, materials?: string | null, minPrice?: number,
+        maxPrice?: number) => {
+        try { 
+            setLoading(true);
 
-      if (res.data?.[0]) {
-        const items: Product[] = res.data[0].data || [];
-        const pInfo = res.data[0].pagination;
+            const payload : any = {
+                pagination: {
+                    currentPage: page.toString(),
+                    itemPerPage: pagination.itemPerPage
+                        ?.toString() || "6"
+                },
+                ...(categoryId ? { categoryId: categoryId } : {}),
+                ...(materials ? { materials: materials } : {}),
+                ...(minPrice ? { minPrice } : {}),
+                ...(maxPrice ? { maxPrice } : {}),
+            };
 
-        // replace data (karena ini pagination biasa, bukan infinite scroll)
-        setProducts(items);
+            const res = await product.ProductList(payload);
+ 
+            if (res.data
+                ?.[0]) {
+                const items : Product[] = res.data[0].data || [];
+                const pInfo = res.data[0].pagination;
 
-        setPagination({
-          currentPage: pInfo.current_page,
-          totalPageCount: pInfo.total_page_count,
-          itemPerPage: pInfo.item_per_page,
-          totalData: pInfo.total_item_count,
-        });
-      } else {
-        // kosongkan jika tidak ada
-        setProducts([]);
-      }
-    } catch (err) {
-      toast.error("Gagal ambil produk. Silahkan coba lagi!", { toastId: "get-product" });
-    } finally {
-      setLoading(false);
-    }
-  };
+                // replace data (karena ini pagination biasa, bukan infinite scroll)
+                setProducts(items);
 
-  // useEffect pemanggil: setiap kali currentPage berubah, fetch page itu
-  useEffect(() => {
-    fetchProducts(currentPage);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentPage]);
-
-  // handler klik page
-  const handlePageChange = (page: number) => {
-    if (page < 1 || page > pagination.totalPageCount) return;
-    setCurrentPage(page); // ini memicu useEffect -> fetchProducts(page)
-  };
-
-  // helper: buat daftar page (dengan ellipsis jika banyak)
-   const getPaginationItems = () => {
-    const total = pagination.totalPageCount;
-    const current = pagination.currentPage;
-    const maxVisible = 10;
-    const pages: { page: number; active: boolean }[] = [];
-
-    let start = 1;
-    let end = total;
-
-    if (total > maxVisible) {
-      if (current <= 6) {
-        start = 1;
-        end = maxVisible;
-      } else if (current >= total - 4) {
-        start = total - 9;
-        end = total;
-      } else {
-        start = current - 4;
-        end = current + 5;
-      }
-    }
-
-    for (let i = start; i <= end; i++) {
-      pages.push({ page: i, active: i === current });
-    }
-
-    return pages;
-  };
-
-   const paginationItems = getPaginationItems();
-
-  const startItem =
-    (pagination.currentPage - 1) * pagination.itemPerPage + 1;
-  const endItem = Math.min(
-    pagination.currentPage * pagination.itemPerPage,
-    pagination.totalData
-  );
-
-
-    // Category data
-    const categoryItems = [
-        {
-            name: "Chair",
-            selected: true
-        }, {
-            name: "Sofa",
-            selected: false
-        }, {
-            name: "Couch",
-            selected: false
-        }, {
-            name: "Desk",
-            selected: false
-        }, {
-            name: "Lamp",
-            selected: false
+                setPagination({
+                    currentPage: pInfo.current_page, 
+                    totalPageCount: pInfo.total_page_count, 
+                    itemPerPage: pInfo.item_per_page, 
+                    // totalData: Number.isFinite(pInfo.total_item_count)
+                    //     ? pInfo.total_item_count
+                    // : 0,
+                    totalData: pInfo.total_item_count
+                });
+            } else {
+                // kosongkan jika tidak ada
+                setProducts([]);
+            }
+        } catch (err) {
+            toast.error("Gagal ambil produk. Silahkan coba lagi!", {toastId: "get-product"});
+        } finally {
+            setLoading(false);
         }
-    ];
+    };
 
-    // Materials data
-    const materialsItems = [
-        {
-            name: "Bronze",
-            count: 8,
-            selected: true
-        }, {
-            name: "Oak wood",
-            count: 12,
-            selected: false
-        }, {
-            name: "Stainless metal",
-            count: 36,
-            selected: false
-        }, {
-            name: "Titanium",
-            count: 4,
-            selected: false
-        }, {
-            name: "Alloy",
-            count: 8,
-            selected: false
-        }, {
-            name: "Ceramic",
-            count: 17,
-            selected: false
+    // useEffect pemanggil: setiap kali currentPage berubah, fetch page itu
+    useEffect(() => {
+        fetchProducts(currentPage);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [currentPage]);
+
+    const [activeCategory, setActiveCategory] = useState<string | null>(null);
+    const handleCategoryClick = (categoryId: string | null) => {
+    const newCategory = activeCategory === categoryId ? null : categoryId;
+        setActiveCategory(newCategory);
+        fetchProducts(1, newCategory, activeMaterial); // tetap kirim material kalau ada
+    };
+
+
+    const [activeMaterial, setActiveMaterial] = useState<string | null>(null);
+    const handleMaterialClick = (material: string | null) => {
+        const newMaterial = activeMaterial === material ? null : material;
+        setActiveMaterial(material);
+        fetchProducts(1, activeCategory, newMaterial);
+    };
+
+    const [priceRange, setPriceRange] = useState<[number, number]>([0, 50000000]);
+    const handlePriceChange = (value: number[]) => {
+        setPriceRange(value as [number, number]);
+    };
+
+    const handleApply = () => {
+    const [minPrice, maxPrice] = priceRange;
+        fetchProducts(1, activeCategory, activeMaterial, minPrice, maxPrice);
+    };
+    
+    const handleReset = () => {
+        setPriceRange([0, 50000000]);
+        fetchProducts(1, null, null, 0, 0);
+    };
+
+    const handlePageChange = (page : number) => {
+        if (page < 1 || page > pagination.totalPageCount) 
+            return;
+        setCurrentPage(page); // ini memicu useEffect -> fetchProducts(page)
+    };
+
+    // helper: buat daftar page (dengan ellipsis jika banyak)
+    const getPaginationItems = () => {
+        const total = pagination.totalPageCount;
+        const current = pagination.currentPage;
+        const maxVisible = 10;
+        const pages : {
+            page : number;
+            active : boolean
+        }[] = [];
+
+        let start = 1;
+        let end = total;
+
+        if (total > maxVisible) {
+            if (current <= 6) {
+                start = 1;
+                end = maxVisible;
+            } else if (current >= total - 4) {
+                start = total - 9;
+                end = total;
+            } else {
+                start = current - 4;
+                end = current + 5;
+            }
         }
-    ];
 
-    // Pagination data
-    // const paginationItems = [
-    //     {
-    //         page: "01",
-    //         active: true
-    //     }, {
-    //         page: "02",
-    //         active: false
-    //     }, {
-    //         page: "03",
-    //         active: false
-    //     }
-    // ];
+        for (let i = start; i <= end; i++) {
+            pages.push({
+                page: i,
+                active: i === current
+            });
+        }
+
+        return pages;
+    };
+
+    const paginationItems = getPaginationItems();
+
+    const startItem = (pagination.currentPage - 1) * pagination.itemPerPage + 1;
+    const endItem = Math.min(pagination.currentPage * pagination.itemPerPage, pagination.totalData);
+
+    type Category = {
+        id: string;
+        name: string;
+    };
+
+    const [categories,
+        setCategories] = useState < Category[] > ([]);
+
+    const fetchCategory = async(page : number) => {
+        try {
+            setLoading(true);
+            const res = await category.CategoryList({
+                pagination: {
+                    currentPage: page.toString(),
+                    itemPerPage: pagination
+                        .itemPerPage
+                        .toString() || "6"
+                }
+            });
+
+            if (res.data
+                ?.[0]) {
+                const items : Category[] = res.data[0].data || [];
+                const pInfo = res.data[0].pagination;
+
+                // replace data (pagination biasa)
+                setCategories(items);
+
+                setPagination({currentPage: pInfo.current_page, totalPageCount: pInfo.total_page_count, itemPerPage: pInfo.item_per_page, totalData: pInfo.total_item_count});
+            } else {
+                // kosongkan jika tidak ada
+                setCategories([]);
+            }
+        } catch (err) {
+            toast.error("Gagal ambil kategori. Silakan coba lagi!", {toastId: "get-category"});
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // ambil data kategori saat pertama mount
+    useEffect(() => {
+        fetchCategory(1);
+    }, []);
+
+    type Material = {
+        materials: string;
+        total: number;
+    };
+
+    const [materials,
+        setMaterials] = useState < Material[] > ([]);
+
+    const fetchMaterials = async() => {
+        try {
+            setLoading(true);
+            const res = await product.MaterialsList();
+
+            if (res && Array.isArray(res.data)) {
+                const list = Array.isArray(res.data[0])
+                    ? res.data[0]
+                    : res.data;
+                setMaterials(list);
+            } else {
+                setMaterials([]);
+                toast.warning("Tidak ada data material ditemukan.", {toastId: "no-materials"});
+            }
+        } catch (err) {
+            toast.error("Gagal ambil materials. Silakan coba lagi!", {toastId: "get-materials"});
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // ambil data kategori saat pertama mount
+    useEffect(() => {
+        fetchMaterials();
+    }, []);
+
     const [open,
         setOpen] = useState(false);
-    const [priceRange,
-        setPriceRange] = useState < [number, number] > ([0, 5000]);
 
     return (
         <div className="bg-white flex flex-row justify-center  overflow-x-hidden">
@@ -232,13 +292,13 @@ export const ProductSection = () : JSX.Element => {
                             <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
                                 <div
                                     className="flex min-h-full items-end justify-center text-center sm:items-center sm:p-0">
-                                   <DialogPanel
-                                    transition
-                                    className="relative w-full top-[100px] transform overflow-hidden rounded-xl bg-white text-left shadow-xl transition-all 
-                                        data-closed:translate-y-4 data-closed:opacity-0 
-                                        data-enter:duration-300 data-enter:ease-out 
-                                        data-leave:duration-200 data-leave:ease-in 
-                                        sm:my-8 
+                                    <DialogPanel
+                                        transition
+                                        className="relative w-full top-[100px] transform overflow-hidden rounded-xl bg-white text-left shadow-xl transition-all
+                                        data-closed:translate-y-4 data-closed:opacity-0
+                                        data-enter:duration-300 data-enter:ease-out
+                                        data-leave:duration-200 data-leave:ease-in
+                                        sm:my-8
                                         max-w-full sm:max-w-lg md:max-w-3xl lg:max-w-2xl xl:max-w-3xl">
                                         <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                                             {/* Category section */}
@@ -275,12 +335,14 @@ export const ProductSection = () : JSX.Element => {
                                                         </AccordionTrigger>
                                                         <AccordionContent>
                                                             <div className="flex flex-col gap-4">
-                                                                {categoryItems.map((item, index) => (
+                                                                {categories.map((item) => (
                                                                     <div
-                                                                        key={index}
-                                                                        className={`${item.selected
-                                                                        ? "font-semibold text-black-1 text-sm"
-                                                                        : "font-h3-16-medium text-black-3 text-sm"}`}>
+                                                                        key={item.id}
+                                                                        onClick={() => handleCategoryClick(item.id)}
+                                                                        className={`text-sm cursor-pointer transition-all duration-150 ${
+                                                                            activeCategory === item.id ? "font-semibold text-black-1 text-sm"  // aktif
+                                                                            : "font-medium text-black-3 hover:text-black-1" // non-aktif
+                                                                        }`}>   
                                                                         {item.name}
                                                                     </div>
                                                                 ))}
@@ -311,20 +373,21 @@ export const ProductSection = () : JSX.Element => {
                                                             </AccordionTrigger>
                                                             <AccordionContent>
                                                                 <div className="flex flex-col gap-4">
-                                                                    {materialsItems.map((item, index) => (
+                                                                    {materials.map((m, index) => (
                                                                         <div key={index} className="flex items-start justify-between w-full">
                                                                             <span
-                                                                                className={`${item.selected
-                                                                                ? "font-semibold text-black-1 text-sm"
-                                                                                : "font-h3-16-medium text-black-3"}`}>
-                                                                                {item.name}
+                                                                                onClick={() => fetchProducts(1, m.materials)}
+                                                                                className={`text-sm cursor-pointer transition-all duration-150 ${
+                                                                                    activeMaterial === m.materials
+                                                                                    ? "font-semibold text-black-1 text-sm"  // aktif
+                                                                                    : "font-medium text-black-3 hover:text-black-1" // non-aktif
+                                                                                }`}>
                                                                             </span>
                                                                             <span
-                                                                                className={`${item.selected
-                                                                                ? "font-semibold text-black-1 text-sm"
-                                                                                : "font-h3-16-medium text-black-3"}`}>
-                                                                                ({item
-                                                                                    .count
+                                                                                className={`text-sm ${
+                                                                                    activeMaterial === m.materials ? "font-semibold text-blue-600" : "text-black-3"
+                                                                                }`}>
+                                                                                ({Number(m.total || 0)
                                                                                     .toString()
                                                                                     .padStart(2, "0")})
                                                                             </span>
@@ -348,7 +411,7 @@ export const ProductSection = () : JSX.Element => {
                                                                             value={priceRange}
                                                                             onValueChange={(newRange) => setPriceRange(newRange as[number,
                                                                             3000])}
-                                                                            min={0}
+                                                                            min={50}
                                                                             max={3000}
                                                                             step={50}
                                                                             className="w-full"/>
@@ -357,7 +420,8 @@ export const ProductSection = () : JSX.Element => {
                                                                         <Button
                                                                             variant="outline"
                                                                             className="h-10 bg-black-7 text-black-1 font-h3-16-medium">
-                                                                            ${priceRange[0]} - ${priceRange[1]}
+                                                                            ${priceRange[0]}
+                                                                            - ${priceRange[1]}
                                                                         </Button>
                                                                         <Button className="h-10 bg-black-1 text-bg-1 font-h3-16-medium">
                                                                             Apply
@@ -399,12 +463,15 @@ export const ProductSection = () : JSX.Element => {
                                         </AccordionTrigger>
                                         <AccordionContent>
                                             <div className="flex flex-col gap-4">
-                                                {categoryItems.map((item, index) => (
+                                                {categories.map((item) => (
                                                     <div
-                                                        key={index}
-                                                        className={`${item.selected
-                                                        ? "font-semibold text-black-1 text-sm"
-                                                        : "font-h3-16-medium text-black-3 text-sm"}`}>
+                                                        key={item.id}
+                                                        onClick={() => handleCategoryClick(item.id)}
+                                                        className={`text-sm cursor-pointer transition-all duration-150 ${
+                                                                    activeCategory === item.id
+                                                                    ? "font-semibold text-black-1 text-sm"  // aktif
+                                                                    : "font-medium text-black-3 hover:text-black-1" // non-aktif
+                                                                }`}>   
                                                         {item.name}
                                                     </div>
                                                 ))}
@@ -451,20 +518,22 @@ export const ProductSection = () : JSX.Element => {
                                             </AccordionTrigger>
                                             <AccordionContent>
                                                 <div className="flex flex-col gap-4">
-                                                    {materialsItems.map((item, index) => (
+                                                    {materials.map((m, index) => (
                                                         <div key={index} className="flex items-start justify-between w-full">
                                                             <span
-                                                                className={`${item.selected
-                                                                ? "font-semibold text-black-1 text-sm"
-                                                                : "font-h3-16-medium text-black-3"}`}>
-                                                                {item.name}
+                                                                onClick={() => handleMaterialClick(m.materials)}
+                                                                className={`text-sm cursor-pointer transition-all duration-150 ${
+                                                                    activeMaterial === m.materials
+                                                                    ? "font-semibold text-black-1 text-sm"  // aktif
+                                                                    : "font-medium text-black-3 hover:text-black-1" // non-aktif
+                                                                }`}>
+                                                                {m.materials}
                                                             </span>
                                                             <span
-                                                                className={`${item.selected
-                                                                ? "font-semibold text-black-1 text-sm"
-                                                                : "font-h3-16-medium text-black-3"}`}>
-                                                                ({item
-                                                                    .count
+                                                                className={`text-sm ${
+                                                                    activeMaterial === m.materials ? "font-semibold text-black-1 text-sm" : "font-h3-16-medium text-black-3 text-sm"
+                                                                }`}>
+                                                                ({Number(m.total || 0)
                                                                     .toString()
                                                                     .padStart(2, "0")})
                                                             </span>
@@ -521,18 +590,36 @@ export const ProductSection = () : JSX.Element => {
                                                 PRICE
                                             </AccordionTrigger>
                                             <AccordionContent>
-                                                <div className="w-full h-[108px] relative">
+                                                <div className="w-full h-[115px] relative">
                                                     <div className="w-full mt-6">
-                                                        <Slider defaultValue={[36]} max={100} step={1} className="w-full"/>
+                                                        <Slider
+                                                            value={priceRange}
+                                                            onValueChange={(newRange) => setPriceRange(newRange as[number, 3000])}
+                                                            min={0} max={50000000} step={50} className="w-full"/>
                                                     </div>
                                                     <div className="flex gap-4 mt-6">
                                                         <Button
                                                             variant="outline"
                                                             className="h-10 bg-black-7 text-black-1 font-h3-16-medium">
-                                                            $0 - $2000
+                                                            Rp. {formatRupiah(priceRange[0], false)} - Rp. {formatRupiah(priceRange[1], false)}
                                                         </Button>
-                                                        <Button className="h-10 bg-black-1 text-bg-1 font-h3-16-medium">
+                                                    </div>
+                                                    <div className="flex mt-5 gap-3 w-full">
+                                                        <Button className="flex-1 h-10 bg-black-1 text-bg-1 font-h3-16-medium hover:bg-black-2 transition-colors"
+                                                        onClick={() => {
+                                                        const [minPrice, maxPrice] = priceRange;
+                                                            fetchProducts(1, activeCategory, activeMaterial, minPrice, maxPrice);
+                                                        }}>
                                                             Apply
+                                                        </Button>
+                                                        <Button variant="outline" className="flex-1 h-10 bg-white text-black-1 border border-neutral-300 font-h3-16-medium hover:bg-neutral-100 transition-colors"
+                                                        onClick={() => {
+                                                            setPriceRange([0, 50000000]);
+                                                            setActiveCategory(null);
+                                                            setActiveMaterial(null); 
+                                                            fetchProducts(1, null, null, 0, 0);
+                                                        }}>
+                                                            Reset
                                                         </Button>
                                                     </div>
                                                 </div>
@@ -586,19 +673,22 @@ export const ProductSection = () : JSX.Element => {
                                         </Button>
                                     </div>
                                 </div>
-                                <span className="lg:block hidden font-h3-16-medium text-black-1 text-center whitespace-nowrap">
-                                   SHOWING {pagination.totalData === 0 ? 0 : startItem} -{" "}
-        {pagination.totalData === 0 ? 0 : endItem} OF{" "}
-        {pagination.totalData} PRODUCTS
+                                <span
+                                    className="lg:block hidden font-h3-16-medium text-black-1 text-center whitespace-nowrap">
+                                    SHOWING {pagination.totalData === 0 ? 0 : startItem}
+                                    - {pagination.totalData === 0 ? 0 : endItem} {" "}
+                                    OF {pagination.totalData} PRODUCTS
                                 </span>
                             </div>
-                            <span className="lg:hidden block font-h3-16-medium text-black-1 text-left whitespace-nowrap">
-                                SHOWING {pagination.totalData === 0 ? 0 : startItem} -{" "}
-        {pagination.totalData === 0 ? 0 : endItem} OF{" "}
-        {pagination.totalData} PRODUCTS
+                            <span
+                                className="lg:hidden block font-h3-16-medium text-black-1 text-left whitespace-nowrap">
+                                  SHOWING {pagination.totalData === 0 ? 0 : startItem}
+                                  - {pagination.totalData === 0 ? 0 : endItem} {" "}
+                                  OF {pagination.totalData} PRODUCTS
                             </span>
 
                             {/* Product sections with improved spacing */}
+                           
                             <div className="space-y-12">
                                 {/* <FeaturedProductsSection /> */}
                                 <ProductGridSection products={products}/>
@@ -614,44 +704,35 @@ export const ProductSection = () : JSX.Element => {
                                 <Pagination>
                                     <PaginationContent className="flex items-center gap-4">
                                         <PaginationItem>
-                                        <PaginationLink
-                                            onClick={() => handlePageChange(pagination.currentPage - 1)}
-                                            className={`w-10 h-10 flex items-center justify-center bg-black-7 text-black-1 rounded-none border-0 ${
-                                            pagination.currentPage === 1
+                                            <PaginationLink
+                                                onClick={() => handlePageChange(pagination.currentPage - 1)}
+                                                className={`w-10 h-10 flex items-center justify-center bg-black-7 text-black-1 rounded-none border-0 ${pagination.currentPage === 1
                                                 ? "bg-black-1 text-black-8 cursor-not-allowed"
-                                                : "bg-black text-white hover:bg-gray-800"
-                                            }`}
-                                        >
-                                            <ChevronLeftIcon className="h-5 w-5" />
-                                        </PaginationLink>
+                                                : "bg-black text-white hover:bg-gray-800"}`}>
+                                                <ChevronLeftIcon className="h-5 w-5"/>
+                                            </PaginationLink>
                                         </PaginationItem>
 
                                         {paginationItems.map((item, index) => (
-                                        <PaginationItem key={index}>
-                                            <PaginationLink
-                                            onClick={() => handlePageChange(item.page)}
-                                            className={`w-10 h-10 flex items-center justify-center rounded-none border-0 font-h3-16-medium ${
-                                                item.active
-                                                ? "bg-black-1 text-black-8"
-                                                : "bg-black-7 text-black-1 hover:bg-black-5"
-                                            }`}
-                                            >
-                                            {item.page}
-                                            </PaginationLink>
-                                        </PaginationItem>
+                                            <PaginationItem key={index}>
+                                                <PaginationLink
+                                                    onClick={() => handlePageChange(item.page)}
+                                                    className={`w-10 h-10 flex items-center justify-center rounded-none border-0 font-h3-16-medium ${item.active
+                                                    ? "bg-black-1 text-black-8"
+                                                    : "bg-black-7 text-black-1 hover:bg-black-5"}`}>
+                                                    {item.page}
+                                                </PaginationLink>
+                                            </PaginationItem>
                                         ))}
 
                                         <PaginationItem>
-                                        <PaginationLink
-                                            onClick={() => handlePageChange(pagination.currentPage + 1)}
-                                            className={`w-10 h-10 flex items-center justify-center bg-black-7 text-black-1 rounded-none border-0 ${
-                                            pagination.currentPage === pagination.totalPageCount
+                                            <PaginationLink
+                                                onClick={() => handlePageChange(pagination.currentPage + 1)}
+                                                className={`w-10 h-10 flex items-center justify-center bg-black-7 text-black-1 rounded-none border-0 ${pagination.currentPage === pagination.totalPageCount
                                                 ? "bg-black-1 text-black-8 cursor-not-allowed"
-                                                : "bg-black text-white hover:bg-gray-800"
-                                            }`}
-                                        >
-                                            <ChevronRightIcon className="h-5 w-5" />
-                                        </PaginationLink>
+                                                : "bg-black text-white hover:bg-gray-800"}`}>
+                                                <ChevronRightIcon className="h-5 w-5"/>
+                                            </PaginationLink>
                                         </PaginationItem>
                                     </PaginationContent>
                                 </Pagination>

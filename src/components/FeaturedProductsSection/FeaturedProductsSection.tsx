@@ -53,13 +53,14 @@ export const FeaturedProductsSection = () : JSX.Element => {
         fetchProducts(1);
     }, []);
 
-    const fetchProducts = async (page: number) => {
+    const fetchProducts = async (page: number, materials?: string) => {
         try {
             const res = await product.ProductList({
             pagination: {
                 currentPage: page.toString(),
-                itemPerPage: "4",
+                itemPerPage: "8",
             },
+            materials: materials || "",
             });
 
             if (res.data?.[0]) {
@@ -162,7 +163,7 @@ const ProductCard = ({ product }: { product: Products }) => {
                         <img
                             className="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-102 h-[300px]"
                             alt={product.name}
-                            src={product.image_url}/>
+                            src={product.image_url[0]}/>
                     </div>
 
                     <div className="flex flex-col items-center gap-3 w-full">
